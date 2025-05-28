@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "phone": "12",
+    "shares": 100,
+    "price": 4,
+    "approved": true,
+    "sold": false
+  },
+  {
+    "id": 2,
+    "phone": "5",
+    "shares": 5,
+    "price": 5,
+    "approved": true,
+    "sold": false
+  },
+  {
+    "id": 3,
+    "phone": "1",
+    "shares": 1,
+    "price": 1,
+    "approved": true,
+    "sold": false
+  }
+]
