@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-const cookieParser = require('cookie-parser'); // برای خواندن کوکی‌ها
+const cookieParser = require('cookie-parser');
 const ExcelJS = require('exceljs');
 
 const app = express();
@@ -15,7 +15,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const usersFile = path.join(__dirname, 'users.json');
 
-// تابع خواندن داده‌ها از فایل JSON با هندل خطا
 function readUsers() {
   try {
     if (!fs.existsSync(usersFile)) return [];
@@ -23,11 +22,10 @@ function readUsers() {
     return JSON.parse(data);
   } catch (error) {
     console.error('خطا در خواندن فایل users.json:', error);
-    return null; // بازگشت null برای تشخیص خطا
+    return null; 
   }
 }
 
-// تابع ذخیره داده‌ها در فایل JSON با هندل خطا
 function saveUsers(users) {
   try {
     fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
@@ -38,12 +36,10 @@ function saveUsers(users) {
   }
 }
 
-// صفحه ورود
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// ورود و تشخیص نقش
 app.post('/login', (req, res) => {
   try {
     const phone = req.body.phone;
@@ -77,7 +73,6 @@ app.post('/login', (req, res) => {
   }
 });
 
-// صفحه پنل ادمین
 app.get('/admin', (req, res) => {
   try {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
@@ -87,7 +82,6 @@ app.get('/admin', (req, res) => {
   }
 });
 
-// صفحه پنل کاربر (می‌توانید فایل user.html را ایجاد کنید)
 app.get('/user', (req, res) => {
   try {
     if (!req.cookies.phone) {
@@ -100,7 +94,6 @@ app.get('/user', (req, res) => {
   }
 });
 
-// API دریافت لیست کاربران
 app.get('/api/users', (req, res) => {
   try {
     const users = readUsers();
@@ -114,7 +107,6 @@ app.get('/api/users', (req, res) => {
   }
 });
 
-// API اضافه کردن کاربر جدید
 app.post('/api/users/add', (req, res) => {
   try {
     const { phone, shares, price } = req.body;
@@ -155,7 +147,6 @@ app.post('/api/users/add', (req, res) => {
   }
 });
 
-// API ویرایش کاربر
 app.post('/api/users/edit', (req, res) => {
   try {
     const { id, phone, shares, price } = req.body;
@@ -192,7 +183,6 @@ app.post('/api/users/edit', (req, res) => {
   }
 });
 
-// API حذف کاربر
 app.post('/api/users/delete', (req, res) => {
   try {
     const { id } = req.body;
@@ -264,7 +254,6 @@ app.get('/api/users/:id', (req, res) => {
   }
 });
 
-// API تایید کاربر
 app.post('/api/users/approve', (req, res) => {
   try {
     const { id } = req.body;
@@ -295,7 +284,6 @@ app.post('/api/users/approve', (req, res) => {
   }
 });
 
-// API دانلود گزارش اکسل کاربران
 app.get('/api/users/excel', async (req, res) => {
   try {
     const users = readUsers();
@@ -342,3 +330,4 @@ app.get('/api/users/excel', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
