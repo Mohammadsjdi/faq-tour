@@ -10,34 +10,28 @@ const PORT = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// فایل داده کاربران
 const usersFile = path.join(__dirname, 'users.json');
 
-// خواندن داده‌ها از فایل JSON
 function readUsers() {
   if (!fs.existsSync(usersFile)) return [];
   const data = fs.readFileSync(usersFile);
   return JSON.parse(data);
 }
 
-// ذخیره داده‌ها در فایل JSON
 function saveUsers(users) {
   fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
 }
 
-// صفحه ورود
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// ورود و تشخیص نقش
 app.post('/login', (req, res) => {
   const phone = req.body.phone;
   if (!phone) {
     return res.send('شماره وارد نشده است!');
   }
 
-  // شماره ادمین فرضی
   const adminPhone = '09123456789';
 
   if (phone === adminPhone) {
@@ -51,23 +45,19 @@ app.post('/login', (req, res) => {
     return res.send('شماره شما ثبت نشده است.');
   }
 
-  // ذخیره شماره کاربر در کوکی ساده برای استفاده در پنل کاربر
   res.cookie('phone', phone);
   res.redirect('/user');
 });
 
-// صفحه پنل ادمین
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// API دریافت لیست کاربران
 app.get('/api/users', (req, res) => {
   const users = readUsers();
   res.json(users);
 });
 
-// API اضافه کردن کاربر جدید
 app.post('/api/users/add', (req, res) => {
   const { phone, shares, price } = req.body;
   let users = readUsers();
@@ -101,7 +91,6 @@ app.post('/api/users/approve', (req, res) => {
   res.sendStatus(200);
 });
 
-// API حذف کاربر
 app.post('/api/users/delete', (req, res) => {
   const { id } = req.body;
   let users = readUsers();
@@ -109,8 +98,6 @@ app.post('/api/users/delete', (req, res) => {
   saveUsers(users);
   res.sendStatus(200);
 });
-
-// API ویرایش سهام و قیمت کاربر
 app.post('/api/users/edit', (req, res) => {
   const { id, shares, price } = req.body;
   let users = readUsers();
@@ -123,7 +110,6 @@ app.post('/api/users/edit', (req, res) => {
   res.sendStatus(200);
 });
 
-// دانلود گزارش اکسل
 app.get('/admin/download', async (req, res) => {
   const users = readUsers();
 
@@ -165,14 +151,11 @@ app.get('/admin/download', async (req, res) => {
   res.end();
 });
 
-// صفحه پنل کاربر
 app.get('/user', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'user.html'));
 });
 
-// API گرفتن اطلاعات کاربر (با شماره موبایل از کوکی)
 app.get('/api/user-info', (req, res) => {
-  // برای سادگی شماره موبایل در کوکی دریافت شده است
   const phone = req.cookies ? req.cookies.phone : null;
   if (!phone) return res.status(401).send('لطفاً ابتدا وارد شوید.');
 
@@ -183,7 +166,6 @@ app.get('/api/user-info', (req, res) => {
   res.json(user);
 });
 
-// API فروش کل سهام
 app.post('/api/user/sell', (req, res) => {
   const phone = req.cookies ? req.cookies.phone : null;
   if (!phone) return res.status(401).send('لطفاً ابتدا وارد شوید.');
@@ -197,10 +179,10 @@ app.post('/api/user/sell', (req, res) => {
   res.sendStatus(200);
 });
 
-// فعال کردن کوکی
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
 });
+
